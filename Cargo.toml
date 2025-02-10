@@ -1,0 +1,17 @@
+[package]
+name = "libraw-rust"
+version = "0.1.0"
+edition = "2021"
+description = "LibRaw bindings"
+license = "MIT/Apache-2.0"
+readme = "readme.md"
+
+[lib]
+name = "libraw"
+
+[dependencies]
+libc = "0.2"
+
+[build-dependencies]
+cc = "1.2"
+bindgen = "0.71"
