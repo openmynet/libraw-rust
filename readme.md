@@ -1,6 +1,6 @@
 # Libraw for Rust
 
-Bindings to the LibRaw C APIs.
+Bindings to the [LibRaw](https://github.com/LibRaw/LibRaw) C APIs.
 
 Vendored libraw @version 0.21.3
 
