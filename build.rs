@@ -9,7 +9,10 @@ fn main() {
 fn build(out_dir: &std::path::Path) {
     let mut libraw = cc::Build::new();
     libraw.cpp(true);
-    libraw.define("WIN32", None);
+
+    if cfg!(target_os = "windows") {
+        libraw.define("WIN32", None);
+    }
     libraw.include("libraw/");
 
     libraw.file("libraw/src/decoders/canon_600.cpp");
@@ -99,13 +102,18 @@ fn build(out_dir: &std::path::Path) {
     libraw.flag_if_supported("-Wno-unused-result");
     libraw.flag_if_supported("-Wno-format-overflow");
     // thread safety
-    libraw.flag("-pthread");
+    libraw.flag_if_supported("-pthread");
 
     // for Windows
+    if cfg!(target_os = "windows") {
+        libraw.static_crt(true);
+        libraw.ar_flag("/NODEFAULTLIB:libcmt");
+        libraw.flag_if_supported("/DWIN32");
+        libraw.flag_if_supported("/DLIBRAW_NODLL");
+    }
+    
     libraw.flag_if_supported("/EHsc");
-    libraw.flag_if_supported("/MP");
-    libraw.flag_if_supported("/DWIN32");
-    libraw.flag_if_supported("/DLIBRAW_NODLL");
+    libraw.flag_if_supported("/MP");    
     libraw.flag_if_supported("/DLIBRAW_BUILDLIB");
 
     libraw.static_flag(true);
@@ -116,6 +124,7 @@ fn build(out_dir: &std::path::Path) {
         out_dir.join("lib").display()
     );
     println!("cargo:rustc-link-lib=static=raw");
+
 }
 
 fn bindings(out_dir: &std::path::Path) {
